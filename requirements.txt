@@ -1,0 +1,11 @@
+discord.py
+wikipedia
+Pillow
+pytz
+requests
+aiofiles
+rapidfuzz
+Wavelink
+asyncpg
+levenshtein
+spotipy

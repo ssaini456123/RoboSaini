@@ -1,0 +1,90 @@
+{
+    "modules": {
+        "admin": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "kick - Kick a user from this server. - kick <user>",
+                "ban - Ban a user from this server. - ban <user>",
+                "timeban - Ban a user for a certain amount of time (This command also attempts to DM the user when they're unbanned). - timeban <user> <time>",
+                "echo - Send a message to a specific channel. - echo <channel id> <msg...>"
+            ]
+        },
+        "clippy": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "clippy - Generates a standard clippy image - clippy <msg...>",
+                "clippyoption - Generates a clippy image with options [Yes] or [No]. - clippyoption <msg...>",
+                "clippyok - Generates a clippy image with an `OK` button. - clippyoption <msg...>"
+            ]
+        },
+        "utils": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "color - Generate a random color. Run this multiple times to generate a color palette - color",
+                "latex - Generate an equation png via latex. - latex <equation...>",
+                "genlatex - Get a formatted equation string to insert into the latex command. - genlatex <expr...>",
+                "pick - Pick between options (seperated by `or`). - pick <opt 1> or <opt 2> or <opt 3> or ..."
+            ]
+        },
+        "time": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "settz - Set (or update) a timezone for others to reference. - settz <timezone...>",
+                "time - Get someones current time (If they have a timezone set). - time <user...>",
+                "removetz - Remove your timezone if one is currently set. - removetz",
+                "remind - Create a reminder. - remind <time> <reminder msg...>"
+            ]
+        },
+        "wikipedia": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "wikipedia - Get a wikipedia article based on your search entry. - wikipedia <search entry...>"
+            ]
+        },
+        "music": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "connect - Connect R. Sainis music player to a voice chat. - connect",
+                "disconnect - Disconnect R. Sainis music player from a voice chat. - disconnect",
+                "play - Add a song to the queue. (Youtube) - play <song>",
+                "pause - Pause the RoboPlayer. - pause",
+                "resume - Resume the RoboPlayer. - resume",
+                "stop - Stop the music player. (Refreshes the queue) - stop",
+                "queue - Get the list of songs in the queue, as well as songs that are currently playing. - queue",
+                "skip - Skip a song. - skip"
+            ]
+        },
+        "starboard": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "setsb - Mark a channel as a starboard channel. - setsb <channel id>",
+                "getsb - Get the servers current starboard. - getsb",
+                "unlocksb - Unlock the starboard. - unlocksb",
+                "locksb - Lock the starboard. - locksb",
+                "setthreshold - Set the amount of stars for a message to be displayed to the starboard. - setthreshold <number>",
+                "getthreshold - Get the amount of stars a message needs for it to be displayed onto the starboard. - getthreshold"
+            ]
+        },
+        "ai": {
+            "homeserver_id": 0,
+            "whitelisted": false,
+            "commands": [
+                "imagine - Generate an image! - imagine <prompt...>"
+            ]
+        },
+        "viva": {
+            "homeserver_id": 777342103280680990,
+            "whitelisted": true,
+            "commands": [
+                "charlihearts - The the amount of charli hearts in the server. - charlihearts"
+            ]
+        }
+    }
+}

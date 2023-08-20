@@ -1,0 +1,8 @@
+./config.json
+.idea
+__pycache__/
+cogs/__pycache__/
+cogs/utils/__pycache__/
+memory/
+.vscode/*
+tmp/

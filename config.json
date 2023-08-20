@@ -1,0 +1,14 @@
+{
+    "bot_pwd": "OTgzNTIyNzAxMDk4NTAwMDk3.G2Sc-A.2VvBEeheM7K2pYNhti2Iez6igng_1jxswAHSgU",
+    "bot_prefix": "$",
+    "homeserver_store_db": "memory/homeserver/charlihearts.db",
+    "spotify_client_id": "71c96f97845d4601a1d8f86064237f95",
+    "spotify_client_secret": "af10b450e9bc4b27b2b278809dc19aad",
+    "db_user": "postgres",
+    "db_password": "password",
+    "database": "robodb",
+    "host": "127.0.0.1",
+    "lavalink_pwd": "youshallnotpass",
+    "lavalink_port": "2333",
+    "lavalink_host": "127.0.0.1"
+}
