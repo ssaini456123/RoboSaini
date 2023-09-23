@@ -33,39 +33,43 @@ class Admin(commands.Cog):
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def massnick(self, ctx: commands.Context, *,  name: str = None):
-        msg = await ctx.send("Saving all usernames...")
 
-        oldNames = {}
+        # check if the nickname is valid len
+        namelen = len(name)
+        if namelen>32:
+            await ctx.send("The nickname you provided it too long.")
+            return
 
         guild = ctx.guild
+        serverTempFile = '{}{}.json'.format(MASSNICK_SAVE_LOC, guild.id)
+
+        exists = os.path.isfile(serverTempFile)
+
+        if exists:
+            await ctx.send("This server already suffered from a mass-nick!")
+            return
+        
+        oldNames = {}
+
+        await ctx.send("Saving all usernames...")
+
         count = 0
+        memberCountActual = len(guild.members)
         for members in guild.members:
-            count += 1
             oldNames[str(members.id)] = members.display_name
             # now edit the username
             try:
+                count += 1
                 await members.edit(nick=name)
             except Exception as e:
                 print(e)
-        
 
-
-        with open('{}{}.json'.format(MASSNICK_SAVE_LOC, ctx.guild.id), 'w') as fp:
+        with open(serverTempFile, 'w') as fp:
             json.dump(oldNames, fp)
 
+        await ctx.message.add_reaction("👍")
 
-        await ctx.send("Names saved. use {}massunnick to revert everyones names back.".format(ctx.prefix))
-        """
-        for userId, dispName in oldNames.items():
-            _id = int(userId)
-
-            self.bot: commands.Bot
-            member = await self.bot.get_guild(ctx.guild.id).fetch_member(_id)
-            try:
-                await member.edit(nick=dispName)
-            except Exception as e:
-                print(e)
-        """
+        await ctx.send("{}/{} saved. Use {}massunnick to revert everyones names back.".format(count, memberCountActual, ctx.prefix))
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
