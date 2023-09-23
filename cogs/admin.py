@@ -1,12 +1,15 @@
 import asyncio
+import json
+import os
 import discord
 from discord.ext import commands
 
+MASSNICK_SAVE_LOC = "asset/disk/"
 
 class Admin(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.db = self.bot.db
+        #self.db = self.bot.db
 
     def convert_to_seconds(self, s):
         seconds_per_unit = {
@@ -26,6 +29,74 @@ class Admin(commands.Cog):
     async def ban(self, ctx, member: discord.Member, *, reason: str = None):
         await ctx.send("Banned member: {} for: {}".format(member.display_name, reason))
         await member.ban(reason=reason)
+    
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    async def massnick(self, ctx: commands.Context, *,  name: str = None):
+        msg = await ctx.send("Saving all usernames...")
+
+        oldNames = {}
+
+        guild = ctx.guild
+        count = 0
+        for members in guild.members:
+            count += 1
+            oldNames[str(members.id)] = members.display_name
+            # now edit the username
+            try:
+                await members.edit(nick=name)
+            except Exception as e:
+                print(e)
+        
+
+
+        with open('{}{}.json'.format(MASSNICK_SAVE_LOC, ctx.guild.id), 'w') as fp:
+            json.dump(oldNames, fp)
+
+
+        await ctx.send("Names saved. use {}massunnick to revert everyones names back.".format(ctx.prefix))
+        """
+        for userId, dispName in oldNames.items():
+            _id = int(userId)
+
+            self.bot: commands.Bot
+            member = await self.bot.get_guild(ctx.guild.id).fetch_member(_id)
+            try:
+                await member.edit(nick=dispName)
+            except Exception as e:
+                print(e)
+        """
+
+    @commands.command()
+    @commands.has_permissions(ban_members=True)
+    async def massunnick(self, ctx):
+        # check if the server was mass-nicked
+        file = "{}{}.json".format(MASSNICK_SAVE_LOC, ctx.guild.id)
+        exists = os.path.isfile(file)
+
+        if not exists:
+            await ctx.send("This server did *not* suffer from a mass-nick.")
+            return
+
+        oldNames = {}
+        with open('{}{}.json'.format(MASSNICK_SAVE_LOC, ctx.guild.id), 'r') as fp:
+            print("Loading temp to ram...")
+            oldNames = json.load(fp)
+
+        print(oldNames)
+
+        for userId, dispName in oldNames.items():
+            _id = int(userId)
+
+            self.bot: commands.Bot
+            member = await self.bot.get_guild(ctx.guild.id).fetch_member(_id)
+            try:
+                await member.edit(nick=dispName)
+            except Exception as e:
+                print(e)
+        await ctx.send("Everyone was freed.")
+        os.remove(file)  
+
 
     @commands.command()
     @commands.has_permissions(ban_members=True)

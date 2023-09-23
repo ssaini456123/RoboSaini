@@ -237,10 +237,8 @@ class Starboard(commands.Cog):
         random.seed(seed)
 
         # now change the shade
-        bright_cap = random.randint(0, 255)
-
-        while b <= bright_cap:
-            b += 1
+        bright_cap = random.randint(0, 220)
+        b = bright_cap
 
         col = discord.Color.from_rgb(r, g, b)
         return col

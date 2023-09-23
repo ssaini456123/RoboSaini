@@ -3,7 +3,7 @@ import json
 import os
 import random
 import time
-from typing import Optional, Union
+from typing import Any, Optional, Union
 import urllib.parse
 import uuid
 
@@ -13,6 +13,7 @@ import discord
 from discord.emoji import Emoji
 
 from discord.enums import ButtonStyle
+from discord.interactions import Interaction
 from discord.partial_emoji import PartialEmoji
 from utils.logger import logF
 from discord.ext import commands
@@ -20,8 +21,9 @@ from discord.ext import commands
 from utils.message import InvalidCommandUsageEmbed
 
 MAX_IMAGES_DOWNLOAD = 9
-INTERACTION_TIMEOUT = 5
+INTERACTION_TIMEOUT = 60 # User has a minute before this becomes invalid
 
+BASE_URL = "https://bf.dallemini.ai/generate"
 TESTING = False
 
 if TESTING:
@@ -80,15 +82,9 @@ class AiView(discord.ui.View):
 
 
 class AI(commands.Cog):
-    # TODO: Remove most of the COLAB specific stuff that R. Saini used to have for her own AI.
-    # Use craiyon for everything now
 
     def __init__(self, bot):
         self.bot = bot
-
-        # HTTP stuff for Crayon
-        # Achieved through RE'ing the backend.
-        self.crayon_url = "https://backend.craiyon.com/generate"
         self.headers = {}
         self.headers["Content-Type"] = "application/json"
 
@@ -105,7 +101,7 @@ class AI(commands.Cog):
         to_json = None
         async with aiohttp.ClientSession() as session:
             async with session.post(
-                self.crayon_url, data=data, headers=self.headers
+                BASE_URL, data=data, headers=self.headers
             ) as resp:
                 to_json = await resp.json()
 
@@ -161,7 +157,7 @@ class AI(commands.Cog):
         replyMsg = ""
 
         # make the reply more human like
-        replyMsg += "Hey *{}*! Your image has been generated!\n".format(author_name)
+        replyMsg += "I imagined a: ***{}***\n".format(prompt)
 
         regenView = AiView(
             ctx=ctx,
@@ -170,7 +166,7 @@ class AI(commands.Cog):
             generateFn=self.download_image,
         )
 
-        await ctx.reply(file=discord.File(fp=downloadedImage), view=regenView)
+        await ctx.reply(replyMsg, file=discord.File(fp=downloadedImage), view=regenView)
 
         # general cleanup here...
         os.remove(downloadedImage)
