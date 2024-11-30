@@ -54,7 +54,7 @@ class RoboSaini:
             "cogs.time",
             "cogs.starboard",
             "cogs.ai",
-            "cogs.music",
+        #    "cogs.music",
             "cogs.image",
             "cogs.homeserver",
         ]

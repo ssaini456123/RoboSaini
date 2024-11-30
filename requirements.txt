@@ -9,3 +9,4 @@ Wavelink
 asyncpg
 levenshtein
 spotipy
+audioop-lts
