@@ -87,7 +87,7 @@ class Time(commands.Cog):
         isValid = self.is_timezone_valid(tz_string)
 
         if isValid is False:
-            similarTz = await self.get_similar_timezones(tz_string)
+            similarTz = await self.get_similar_timezones(tz_string.strip("_"))
             if similarTz is None:
                 # No similarities found period.
                 await ctx.send(
@@ -180,7 +180,6 @@ class Time(commands.Cog):
     @commands.command()
     async def time(self, ctx, member: discord.User = None):
         user_id = ctx.message.author.id
-
         authorHasTz = await self.get_timezone(user_id)
 
         if member is None:
@@ -206,9 +205,9 @@ class Time(commands.Cog):
             conversion = twenty_four_hour_clock_conv.strftime("%I:%M %p")
 
             viewableTz = authorTz.replace("_", " ")
-            await ctx.send(
-                f"It is currently: *{conversion}* in {viewableTz}, where you live."
-            )
+            meta = self.get_hour_meta(date.hour)
+
+            await ctx.send(f"{meta[0]} It is currently: **{conversion}** in __{viewableTz}__, where you live.")
             return
         else:
             member_id = member.id
@@ -238,13 +237,7 @@ class Time(commands.Cog):
 
             conversion = twenty_four_hour_clock_conv.strftime("%I:%M %p")
 
-            await QuickEmbed(
-                ctx=ctx,
-                color=meta[1], 
-                title=meta[0], 
-                description=f"It is currently: **{conversion}** in __{viewableTz}__, where {member.display_name} lives."
-            ).send()
-            
+            await ctx.send(f"{meta[0]} It is currently: **{conversion}** in __{viewableTz}__, where {member.global_name} lives.")
             return
 
 

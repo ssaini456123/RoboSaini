@@ -3,10 +3,10 @@
     "testing_pwd": "ODk2NTYyODczMjIyOTcxNDQz.GhDImb.pTNNqY5YKymtj9rRauDWf-DfTWfjOKMNyhbEbI",
     "bot_prefix": "$",
     "test_prefix": "*",
-    "db_user": "rsaini",
+    "db_user": "postgres",
     "db_password": "1000051190Sutinder",
-    "database": "postgres",
-    "host": "0.0.0.0",
+    "database": "robodb",
+    "host": "localhost",
     "lavalink_pwd": "youshallnotpass",
     "lavalink_port": "2333",
     "lavalink_host": "127.0.0.1"
