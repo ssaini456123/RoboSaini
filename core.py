@@ -57,8 +57,6 @@ class RoboSaini:
 
         self.cog_list = [
             "cogs.help",
-            "cogs.event",
-            "cogs.admin",
             "cogs.wikipedia",
             "cogs.clippy",
             "cogs.time",
