@@ -46,7 +46,7 @@ class RegenerateButton(discord.ui.Button):
         oldPrompt = self.oldPrompt
 
         await interaction.response.send_message(
-            "Alright, I will generate another image of: *{}* for you. Hang tight!".format(
+            "Regenerating an image of: *{}*...".format(
                 oldPrompt
             ),
             ephemeral=True,

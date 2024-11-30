@@ -183,16 +183,12 @@ class Time(commands.Cog):
 
         authorHasTz = await self.get_timezone(user_id)
 
-        if not authorHasTz:
-            await ctx.send("You do not have a timezone set. Use $settz to set one.")
-            return
-
         if member is None:
             # do we have a timezone?
             if authorHasTz is False:
                 # nope, go no further!
                 await ctx.send(
-                    "I couldn't find a timezone of yours in my files, you can add one by running: {}settz <timezone>".format(
+                    "No timezone found.".format(
                         ctx.prefix
                     )
                 )
@@ -221,7 +217,7 @@ class Time(commands.Cog):
 
             if userHasTz is False:
                 await ctx.send(
-                    "It seems that user doesn't have their timezone in my files. They can add it by running {}settz".format(
+                    f"{member.name} does not have a timezone set.".format(
                         ctx.prefix
                     )
                 )

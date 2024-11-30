@@ -115,7 +115,7 @@ class Starboard(commands.Cog):
         if channel_id not in guildChannelIdList:
             # go no further
             await ctx.send(
-                "That channel id does not seem to exist, are you sure you are copying the correct one?"
+                "Channel ID does not exist."
             )
             return
 
@@ -130,7 +130,7 @@ class Starboard(commands.Cog):
         )
 
         await self.db.execute(query)
-        await ctx.send("Starboard channel set to: **{}**".format(channel_id))
+        await ctx.send("Starboard channel set to: **{}**.".format(channel_id))
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
@@ -144,7 +144,7 @@ class Starboard(commands.Cog):
         channel = await self.db.fetchval(query)
 
         if channel == None:
-            await ctx.send("There is currently not a starboard set.")
+            await ctx.send("No starboard found.")
             return
 
         await ctx.send("The starboard is located at: {}".format(channel))
@@ -162,7 +162,7 @@ class Starboard(commands.Cog):
         if threshold is None:
             threshold = 3
         await ctx.send(
-            "You will need {} stars for a message to display on the starboard.".format(
+            "{} stars required.".format(
                 threshold
             )
         )
@@ -184,7 +184,7 @@ class Starboard(commands.Cog):
 
         await self.db.execute(query)
 
-        await ctx.send("Starboard threshold is now: {}".format(threshold))
+        await ctx.send("Starboard threshold is now: {}.".format(threshold))
 
     @commands.command()
     @commands.has_permissions(ban_members=True)

@@ -1,6 +1,8 @@
 {
     "bot_pwd": "OTgzNTIyNzAxMDk4NTAwMDk3.GS1rSJ.id0lJZ-YtLCiVf6x7D_3N38g9UMaujllv3Cxd8",
+    "testing_pwd": "ODk2NTYyODczMjIyOTcxNDQz.GhDImb.pTNNqY5YKymtj9rRauDWf-DfTWfjOKMNyhbEbI",
     "bot_prefix": "$",
+    "test_prefix": "*",
     "db_user": "rsaini",
     "db_password": "1000051190Sutinder",
     "database": "postgres",
