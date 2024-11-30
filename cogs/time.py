@@ -11,6 +11,7 @@ import rapidfuzz
 
 from utils.logger import logErr
 from utils.buttons import JumpView
+from utils.message import QuickEmbed
 from discord.ext import commands
 
 
@@ -162,11 +163,29 @@ class Time(commands.Cog):
         await self.db.execute(query)
         await ctx.send("Timezone removed.")
 
+    def get_hour_meta(self, hour):
+        chosen_emoji = ''
+        chosen_color_code = ''
+
+        if hour > 19:
+            chosen_emoji = '🌙'
+            chosen_color_code = '0x000924'
+        else:
+            chosen_emoji = '☀️'
+            chosen_color_code = '0xFFFF00'
+
+        tup = (chosen_emoji, chosen_color_code)
+        return tup
+
     @commands.command()
     async def time(self, ctx, member: discord.User = None):
         user_id = ctx.message.author.id
 
         authorHasTz = await self.get_timezone(user_id)
+
+        if not authorHasTz:
+            await ctx.send("You do not have a timezone set. Use $settz to set one.")
+            return
 
         if member is None:
             # do we have a timezone?
@@ -214,14 +233,22 @@ class Time(commands.Cog):
             date = datetime.datetime.now(userTimezone)
 
             time_format = f"{date.hour}:{date.minute}"
+            
+            meta = self.get_hour_meta(date.hour)
+
             twenty_four_hour_clock_conv = datetime.datetime.strptime(
                 time_format, "%H:%M"
             )
+
             conversion = twenty_four_hour_clock_conv.strftime("%I:%M %p")
 
-            await ctx.send(
-                f"It is currently: *{conversion}* in {viewableTz}, where *{member.display_name}* lives."
-            )
+            await QuickEmbed(
+                ctx=ctx,
+                color=meta[1], 
+                title=meta[0], 
+                description=f"It is currently: **{conversion}** in __{viewableTz}__, where {member.display_name} lives."
+            ).send()
+            
             return
 
 

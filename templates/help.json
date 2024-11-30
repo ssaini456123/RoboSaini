@@ -78,13 +78,6 @@
             "commands": [
                 "imagine - Generate an image! - imagine <prompt...>"
             ]
-        },
-        "viva": {
-            "homeserver_id": 777342103280680990,
-            "whitelisted": true,
-            "commands": [
-                "charlihearts - The the amount of charli hearts in the server. - charlihearts"
-            ]
         }
     }
 }

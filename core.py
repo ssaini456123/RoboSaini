@@ -54,9 +54,8 @@ class RoboSaini:
             "cogs.time",
             "cogs.starboard",
             "cogs.ai",
-        #    "cogs.music",
-            "cogs.image",
-            "cogs.homeserver",
+            "cogs.music",
+            "cogs.image"
         ]
         self.intents = discord.Intents.all()
 

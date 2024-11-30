@@ -1,9 +1,6 @@
 {
     "bot_pwd": "OTgzNTIyNzAxMDk4NTAwMDk3.GS1rSJ.id0lJZ-YtLCiVf6x7D_3N38g9UMaujllv3Cxd8",
     "bot_prefix": "$",
-    "homeserver_store_db": "memory/homeserver/charlihearts.db",
-    "spotify_client_id": "71c96f97845d4601a1d8f86064237f95",
-    "spotify_client_secret": "af10b450e9bc4b27b2b278809dc19aad",
     "db_user": "rsaini",
     "db_password": "1000051190Sutinder",
     "database": "postgres",

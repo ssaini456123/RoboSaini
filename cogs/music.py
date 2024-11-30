@@ -29,7 +29,7 @@ class Music(commands.Cog):
         print("{} Done.")
 
     async def connect_nodes(self):
-        print("post={}".format(self.lavalink_port))
+        print("port={}".format(self.lavalink_port))
         print("host={}".format(self.lavalink_host))
         await self.bot.wait_until_ready()
 
