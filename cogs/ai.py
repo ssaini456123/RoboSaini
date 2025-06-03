@@ -24,10 +24,6 @@ MAX_IMAGES_DOWNLOAD = 9
 INTERACTION_TIMEOUT = 60 # User has a minute before this becomes invalid
 
 BASE_URL = "https://bf.dallemini.ai/generate"
-TESTING = False
-
-if TESTING:
-    logF("Ai.py is in testing mode.")
 
 
 class RegenerateButton(discord.ui.Button):
@@ -88,7 +84,7 @@ class AI(commands.Cog):
         self.headers = {}
         self.headers["Content-Type"] = "application/json"
 
-        self.save_path = "asset/ai"
+        self.save_path = "images/ai"
 
     async def download_image(self, prompt: str = None):
         # build our request
@@ -115,14 +111,6 @@ class AI(commands.Cog):
         img_id = uuid.uuid4()
 
         randIndex = random.randint(0, 8)
-
-        if TESTING:
-            logF(
-                "\nRandom index chosen from seeded random number generator: {} \n".format(
-                    randIndex
-                )
-            )
-
         url_fmt = "{}{}".format(data_url_template, to_json["images"][randIndex])
 
         # use urlopen to open our data URI

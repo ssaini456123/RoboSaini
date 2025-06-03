@@ -1,15 +1,5 @@
 {
     "modules": {
-        "admin": {
-            "homeserver_id": 0,
-            "whitelisted": false,
-            "commands": [
-                "kick - Kick a user from this server. - kick <user>",
-                "ban - Ban a user from this server. - ban <user>",
-                "timeban - Ban a user for a certain amount of time (This command also attempts to DM the user when they're unbanned). - timeban <user> <time>",
-                "echo - Send a message to a specific channel. - echo <channel id> <msg...>"
-            ]
-        },
         "clippy": {
             "homeserver_id": 0,
             "whitelisted": false,
@@ -17,16 +7,6 @@
                 "clippy - Generates a standard clippy image - clippy <msg...>",
                 "clippyoption - Generates a clippy image with options [Yes] or [No]. - clippyoption <msg...>",
                 "clippyok - Generates a clippy image with an `OK` button. - clippyoption <msg...>"
-            ]
-        },
-        "utils": {
-            "homeserver_id": 0,
-            "whitelisted": false,
-            "commands": [
-                "color - Generate a random color. Run this multiple times to generate a color palette - color",
-                "latex - Generate an equation png via latex. - latex <equation...>",
-                "genlatex - Get a formatted equation string to insert into the latex command. - genlatex <expr...>",
-                "pick - Pick between options (seperated by `or`). - pick <opt 1> or <opt 2> or <opt 3> or ..."
             ]
         },
         "time": {
@@ -44,20 +24,6 @@
             "whitelisted": false,
             "commands": [
                 "wikipedia - Get a wikipedia article based on your search entry. - wikipedia <search entry...>"
-            ]
-        },
-        "music": {
-            "homeserver_id": 0,
-            "whitelisted": false,
-            "commands": [
-                "connect - Connect R. Sainis music player to a voice chat. - connect",
-                "disconnect - Disconnect R. Sainis music player from a voice chat. - disconnect",
-                "play - Add a song to the queue. (Youtube) - play <song>",
-                "pause - Pause the RoboPlayer. - pause",
-                "resume - Resume the RoboPlayer. - resume",
-                "stop - Stop the music player. (Refreshes the queue) - stop",
-                "queue - Get the list of songs in the queue, as well as songs that are currently playing. - queue",
-                "skip - Skip a song. - skip"
             ]
         },
         "starboard": {

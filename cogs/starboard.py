@@ -7,12 +7,8 @@ from discord.ext import commands
 
 from utils.buttons import JumpView
 
-TESTING = False
-
 STARBOARD_EMOJI = "⭐"
-SPOTIFY_IDENTIFIER = "https://open.spotify.com/"
 HEADER_TEMPLATE = "**{}** {} in: <#{}>"
-
 
 class StarboardEntry:
     exists: bool = False

@@ -1,4 +1,3 @@
-import math
 import os
 import textwrap
 
@@ -15,8 +14,8 @@ class Clippy(commands.Cog):
 
     @commands.command()
     async def clippy(self, ctx, *, text: str = None):
-        path = "asset/clippy.jpg"
-        newfile = "asset/clippynew.jpg"
+        path = "images/clippy.jpg"
+        newfile = "images/clippynew.jpg"
 
         if text == None:
             usage = f"clippy <text...>"
@@ -28,7 +27,7 @@ class Clippy(commands.Cog):
         width = 40
         newtext = textwrap.fill(text, width)
         image = Image.open(path)
-        font = ImageFont.truetype("asset/clippy.ttf", 12)
+        font = ImageFont.truetype("images/clippy.ttf", 12)
         draw = ImageDraw.Draw(image)
 
         draw.text(xy=(12, 12), text=newtext, fill="rgb(0,0,0)", font=font)
