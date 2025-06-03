@@ -39,16 +39,8 @@ class RoboSaini:
     def __init__(self):
         with open("config.json") as config:
             data = json.load(config)
-            
-            if TESTING_MODE:
-                print("Testing mode enabled. Using test PWD. and PREFIX")
-                self.bot_pwd = data["testing_pwd"]
-                self.bot_prefix = data["test_prefix"]
-            else:
-                self.bot_pwd = data["bot_pwd"]
-                self.bot_prefix = data["bot_prefix"]
-
-            
+            self.bot_pwd = data["bot_pwd"]
+            self.bot_prefix = data["bot_prefix"]
 
             self.db_user = data["db_user"]
             self.db_pwd = data["db_password"]

@@ -23,12 +23,10 @@ class Time(commands.Cog):
     async def has_timezone(self, user_id):
         query = """
                 SELECT timezone FROM user_settings WHERE
-                    id={}
-                """.format(
-            user_id
-        )
+                    id=$1
+                """
 
-        timezoneUser = await self.db.fetchrow(query)
+        timezoneUser = await self.db.fetchrow(query, user_id)
 
         if timezoneUser == None:
             return False
@@ -37,12 +35,10 @@ class Time(commands.Cog):
 
     async def get_timezone(self, user_id):
         query = """
-            SELECT timezone FROM user_settings WHERE id={}
-            """.format(
-            user_id
-        )
+            SELECT timezone FROM user_settings WHERE id=$1
+            """
 
-        tz = await self.db.fetchval(query)
+        tz = await self.db.fetchval(query, user_id)
         return str(tz)
 
     def is_timezone_valid(self, tz):
@@ -117,14 +113,12 @@ class Time(commands.Cog):
 
         query = """
                     INSERT INTO user_settings (id, timezone) 
-                    VALUES({}, '{}')
+                    VALUES($1, $2)
                     ON CONFLICT(id) DO UPDATE
-                    SET timezone='{}'
-                    WHERE user_settings.id={}
-                """.format(
-            user_id, tz_string, tz_string, user_id
-        )
-        await self.db.execute(query)
+                    SET timezone=$3
+                    WHERE user_settings.id=$4
+                """
+        await self.db.execute(query, user_id, tz_string, tz_string, user_id)
         await ctx.send("Timezone successfully set to: *{}*!".format(tz_string))
 
     @commands.command()
@@ -155,12 +149,10 @@ class Time(commands.Cog):
 
         query = """
                     DELETE FROM user_settings
-                    WHERE id={}
-                """.format(
-            user_id
-        )
+                    WHERE id=$1
+                """
 
-        await self.db.execute(query)
+        await self.db.execute(query, user_id)
         await ctx.send("Timezone removed.")
 
     def get_hour_meta(self, hour):
@@ -176,6 +168,13 @@ class Time(commands.Cog):
 
         tup = (chosen_emoji, chosen_color_code)
         return tup
+
+    def strip_city_name(self, location: str):
+        substr = location.split("/")
+        city = substr[1]
+        city = city.replace("_", " ")
+
+        return city
 
     @commands.command()
     async def time(self, ctx, member: discord.User = None):
@@ -204,10 +203,10 @@ class Time(commands.Cog):
             )
             conversion = twenty_four_hour_clock_conv.strftime("%I:%M %p")
 
-            viewableTz = authorTz.replace("_", " ")
+            viewableTz = self.strip_city_name(authorTz)
             meta = self.get_hour_meta(date.hour)
 
-            await ctx.send(f"{meta[0]} It is currently: **{conversion}** in __{viewableTz}__, where you live.")
+            await ctx.send(f"{meta[0]} It is currently: **{conversion}** in *{viewableTz}*, where you live.")
             return
         else:
             member_id = member.id
@@ -230,6 +229,7 @@ class Time(commands.Cog):
             time_format = f"{date.hour}:{date.minute}"
             
             meta = self.get_hour_meta(date.hour)
+            viewableTz = self.strip_city_name(userTz)
 
             twenty_four_hour_clock_conv = datetime.datetime.strptime(
                 time_format, "%H:%M"
@@ -237,8 +237,7 @@ class Time(commands.Cog):
 
             conversion = twenty_four_hour_clock_conv.strftime("%I:%M %p")
 
-            await ctx.send(f"{meta[0]} It is currently: **{conversion}** in __{viewableTz}__, where {member.global_name} lives.")
-            return
+            await ctx.send(f"{meta[0]} It is currently: **{conversion}** in *{viewableTz}*, where {member.name} lives.")
 
 
 async def setup(bot):

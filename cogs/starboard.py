@@ -23,11 +23,8 @@ class StarboardEntry:
         self.db = db
 
     async def fetch(self):
-        query = """SELECT * FROM starboard_entries WHERE msg_id={}""".format(
-            self.msg_id
-        )
-
-        result = await self.db.fetchrow(query)
+        query = """SELECT * FROM starboard_entries WHERE msg_id=$1"""
+        result = await self.db.fetchrow(query, self.msg_id)
 
         if result is None:
             self.exists = False
@@ -53,8 +50,8 @@ class StarboardProperties:
         self.guild_id = guild_id
 
     async def fetch(self):
-        query = """SELECT * FROM starboard WHERE id={}""".format(self.guild_id)
-        entry = await self.db.fetchrow(query)
+        query = """SELECT * FROM starboard WHERE id=$1"""
+        entry = await self.db.fetchrow(query, self.guild_id)
 
         if entry is None:
             self.exists = False
@@ -76,11 +73,9 @@ class Starboard(commands.Cog):
 
     async def is_in_db(self, guild_id):
         query = """
-                    SELECT channel, threshold, locked FROM starboard WHERE id={}
-                """.format(
-            guild_id
-        )
-        availability = await self.db.execute(query)
+                    SELECT channel, threshold, locked FROM starboard WHERE id=$1
+                """
+        availability = await self.db.execute(query, guild_id)
 
         if availability is None:
             return True
@@ -89,12 +84,9 @@ class Starboard(commands.Cog):
 
     async def locked(self, guild_id):
         query = """
-                    SELECT locked FROM starboard WHERE id={}
-                """.format(
-            guild_id
-        )
-
-        locked = await self.db.fetchval(query)
+                    SELECT locked FROM starboard WHERE id=$1
+                """
+        locked = await self.db.fetchval(query, guild_id)
 
         return locked
 
@@ -117,27 +109,21 @@ class Starboard(commands.Cog):
 
         query = """
                     INSERT INTO starboard (id, channel)
-                    VALUES({}, {}) 
+                    VALUES($1, $2) 
                     ON CONFLICT(id) DO UPDATE
-                    SET channel={}
-                    WHERE starboard.id = {};
-                """.format(
-            ctx.guild.id, channel_id, channel_id, ctx.guild.id
-        )
-
-        await self.db.execute(query)
+                    SET channel=$3
+                    WHERE starboard.id = $4;
+                """
+        await self.db.execute(query, ctx.guild.id, channel_id, channel_id, ctx.guild.id)
         await ctx.send("Starboard channel set to: **{}**.".format(channel_id))
 
     @commands.command()
     @commands.has_permissions(ban_members=True)
     async def getsb(self, ctx):
         query = """
-                    SELECT channel FROM starboard WHERE id={}
-                """.format(
-            ctx.guild.id
-        )
-
-        channel = await self.db.fetchval(query)
+                    SELECT channel FROM starboard WHERE id=$1
+                """
+        channel = await self.db.fetchval(query, ctx.guild.id)
 
         if channel == None:
             await ctx.send("No starboard found.")
@@ -148,12 +134,10 @@ class Starboard(commands.Cog):
     @commands.command()
     async def getthreshold(self, ctx):
         query = """
-                    SELECT threshold FROM starboard WHERE id={}
-                """.format(
-            ctx.guild.id
-        )
+                    SELECT threshold FROM starboard WHERE id=$1
+                """
 
-        threshold = await self.db.fetchval(query)
+        threshold = await self.db.fetchval(query, ctx.guild.id)
 
         if threshold is None:
             threshold = 3
@@ -172,13 +156,11 @@ class Starboard(commands.Cog):
 
         query = """
                     INSERT INTO starboard (id, threshold)
-                    VALUES ({}, {}) ON CONFLICT(id) DO UPDATE
-                    SET threshold={} WHERE starboard.id={}
-                """.format(
-            ctx.guild.id, threshold, threshold, ctx.guild.id
-        )
+                    VALUES ($1, $2) ON CONFLICT(id) DO UPDATE
+                    SET threshold=$3 WHERE starboard.id=$4
+                """
 
-        await self.db.execute(query)
+        await self.db.execute(query, ctx.guild.id, threshold, threshold, ctx.guild.id)
 
         await ctx.send("Starboard threshold is now: {}.".format(threshold))
 
@@ -187,13 +169,11 @@ class Starboard(commands.Cog):
     async def locksb(self, ctx):
         query = """
                     INSERT INTO starboard (id, locked)
-                    VALUES ({}, TRUE) ON CONFLICT(id) DO UPDATE
-                    SET locked=TRUE WHERE starboard.id={}
-                """.format(
-            ctx.guild.id, ctx.guild.id
-        )
-        await self.db.execute(query)
-
+                    VALUES ($1, TRUE) ON CONFLICT(id) DO UPDATE
+                    SET locked=TRUE WHERE starboard.id=$2
+                """
+        
+        await self.db.execute(query, ctx.guild.id, ctx.guild.id)
         await ctx.send("Starboard is now locked. Messages starred will be ignored.")
 
     @commands.command()
@@ -201,12 +181,10 @@ class Starboard(commands.Cog):
     async def unlocksb(self, ctx):
         query = """
                     INSERT INTO starboard (id, locked)
-                    VALUES ({}, FALSE) ON CONFLICT(id) DO UPDATE
-                    SET locked=FALSE WHERE starboard.id={}
-                """.format(
-            ctx.guild.id, ctx.guild.id
-        )
-        await self.db.execute(query)
+                    VALUES ($1, FALSE) ON CONFLICT(id) DO UPDATE
+                    SET locked=FALSE WHERE starboard.id=$2
+                """
+        await self.db.execute(query, ctx.guild.id, ctx.guild.id)
 
         await ctx.send(
             "The server starboard is now unlocked. Starred messages will no longer be ignored."
@@ -268,12 +246,10 @@ class Starboard(commands.Cog):
         reaction = discord.utils.get(message.reactions, emoji=STARBOARD_EMOJI)
 
         query = """
-                    SELECT threshold FROM starboard WHERE id={}
-                """.format(
-            payload.guild_id
-        )
+                    SELECT threshold FROM starboard WHERE id=$1
+                """
 
-        threshold = await self.db.fetchval(query)
+        threshold = await self.db.fetchval(query, payload.guild_id)
 
         if reaction.count < threshold:
             return
@@ -285,36 +261,29 @@ class Starboard(commands.Cog):
 
         query2 = """
                 INSERT INTO starers VALUES (
-                    {},
-                    {}
-                )""".format(
-            payload.user_id, msg_id
-        )
+                    $1,
+                    $2
+                )"""
 
         # do we have an embed set?
         if entry.exists:
             bot_msg_id = entry.bot_msg_id
 
-            query = """SELECT * FROM starers WHERE user_id={} AND msg_id={}""".format(
-                payload.user_id, entry.msg_id
-            )
-
-            starer = await self.db.fetchrow(query)
+            query = """SELECT * FROM starers WHERE user_id=$1 AND msg_id=$2"""
+            starer = await self.db.fetchrow(query, payload.user_id, entry.msg_id)
 
             if starer is not None:
                 return
 
             query = """UPDATE starboard_entries SET stars = starboard_entries.stars + 1 
-                        WHERE msg_id = {}
-                    """.format(
-                entry.msg_id
-            )
+                        WHERE msg_id = $1
+                    """
 
             bot_channel = await self.bot.fetch_channel(starboard_id)
             bot_message = await bot_channel.fetch_message(bot_msg_id)
 
-            await self.db.execute(query)
-            await self.db.execute(query2)
+            await self.db.execute(query, entry.msg_id)
+            await self.db.execute(query2, payload.user_id, msg_id)
 
             stars = entry.stars
             stars += 1
@@ -377,16 +346,14 @@ class Starboard(commands.Cog):
 
         bot_content = await channel.send(embed=sb_embed, view=jumpView)
         query = """INSERT INTO starboard_entries VALUES (
-                    {},
-                    {},
-                    {},
-                    {},
-                    {}
-                )""".format(
-            msg_id, bot_message.id, payload.channel_id, reaction.count, bot_content.id
-        )
-        await self.db.execute(query)
-        await self.db.execute(query2)
+                    $1,
+                    $2,
+                    $3,
+                    $4,
+                    $5
+                )"""
+        await self.db.execute(query, msg_id, bot_message.id, payload.channel_id, reaction.count, bot_content.id)
+        await self.db.execute(query2, payload.user_id, msg_id)
 
     @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload: discord.RawReactionActionEvent):
@@ -417,26 +384,19 @@ class Starboard(commands.Cog):
                 await bot_msg.delete()
                 await content_msg.delete()
 
-                query = """DELETE FROM starboard_entries WHERE msg_id={}""".format(
-                    payload.message_id
-                )
-                await self.db.execute(query)
+                query = """DELETE FROM starboard_entries WHERE msg_id=$1"""
+                await self.db.execute(query, payload.message_id)
                 return
 
             star = self.get_star(stars)
             message = HEADER_TEMPLATE.format(star, stars, payload.channel_id)
 
-            query = """DELETE FROM starers WHERE msg_id={} AND user_id={}""".format(
-                payload.message_id, payload.user_id
-            )
-            query2 = (
-                """UPDATE starboard_entries SET stars = {} WHERE msg_id={}""".format(
-                    stars, payload.message_id
-                )
-            )
+            query = """DELETE FROM starers WHERE msg_id=$1 AND user_id=$2"""
+            query2 = """UPDATE starboard_entries SET stars = $1 WHERE msg_id = $2 """
 
-            await self.db.execute(query)
-            await self.db.execute(query2)
+
+            await self.db.execute(query, payload.message_id, payload.user_id)
+            await self.db.execute(query2, stars, payload.message_id)
             await bot_msg.edit(content=message)
         else:
             # locked - we cant delete stuff in this state.
