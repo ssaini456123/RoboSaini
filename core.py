@@ -18,7 +18,7 @@ BANNER = """
 {} | | \ \ _   ____) | (_| | | | | | | {}
 {} |_|  \_(_) |_____/ \__,_|_|_| |_|_| {}
 
-{}Author: https://github.com/terrain123456{}
+{}Author: https://github.com/ssaini456123{}
 """
 
 for i in BANNER.splitlines():
@@ -62,7 +62,6 @@ class RoboSaini:
             "cogs.time",
             "cogs.starboard",
             "cogs.ai",
-            "cogs.music",
             "cogs.image"
         ]
         self.intents = discord.Intents.all()
